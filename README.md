@@ -7,7 +7,7 @@
 
 ### Mostly automatic installation
 
-`$ react-native link react-native-android-installed-apps`
+`$ react-native link react-native-android-installed-apps-unblocking`
 
 ### Manual installation
 
