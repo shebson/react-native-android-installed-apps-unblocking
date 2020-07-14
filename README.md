@@ -20,12 +20,12 @@
   - Add `new RNAndroidInstalledAppsPackage()` to the list returned by the `getPackages()` method
 2. Append the following lines to `android/settings.gradle`:
   	```
-  	include ':react-native-android-installed-apps'
-  	project(':react-native-android-installed-apps').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-android-installed-apps/android')
+  	include ':react-native-android-installed-apps-unblocking'
+  	project(':react-native-android-installed-apps-unblocking').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-android-installed-apps/android')
   	```
 3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
   	```
-      compile project(':react-native-android-installed-apps')
+      compile project(':react-native-android-installed-apps-unblocking')
   	```
 
 
