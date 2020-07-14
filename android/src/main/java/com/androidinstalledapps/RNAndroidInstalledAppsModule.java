@@ -29,7 +29,7 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
 
   private final ReactApplicationContext reactContext;
 
-  public RNAndroidInstalledAppsModule(ReactApplicationContext reactContext) {
+  public RNAndroidInstalledAppsModule(final ReactApplicationContext reactContext) {
     super(reactContext);
     this.reactContext = reactContext;
   }
@@ -40,14 +40,14 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void getApps(Promise promise) {
+  public void getApps(final Promise promise) {
     try {
-      PackageManager pm = this.reactContext.getPackageManager();
-      List<PackageInfo> pList = pm.getInstalledPackages(0);
-      WritableArray list = Arguments.createArray();
+      final PackageManager pm = this.reactContext.getPackageManager();
+      final List<PackageInfo> pList = pm.getInstalledPackages(0);
+      final WritableArray list = Arguments.createArray();
       for (int i = 0; i < pList.size(); i++) {
-        PackageInfo packageInfo = pList.get(i);
-        WritableMap appInfo = Arguments.createMap();
+        final PackageInfo packageInfo = pList.get(i);
+        final WritableMap appInfo = Arguments.createMap();
 
         appInfo.putString("packageName", packageInfo.packageName);
         appInfo.putString("versionName", packageInfo.versionName);
@@ -56,71 +56,84 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
         appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime));
         appInfo.putString("appName", ((String) packageInfo.applicationInfo.loadLabel(pm)).trim());
 
-        Drawable icon = pm.getApplicationIcon(packageInfo.applicationInfo);
+        final Drawable icon = pm.getApplicationIcon(packageInfo.applicationInfo);
         appInfo.putString("icon", Utility.convert(icon));
 
-        String apkDir = packageInfo.applicationInfo.publicSourceDir;
+        final String apkDir = packageInfo.applicationInfo.publicSourceDir;
         appInfo.putString("apkDir", apkDir);
 
-        File file = new File(apkDir);
-        double size = file.length();
+        final File file = new File(apkDir);
+        final double size = file.length();
         appInfo.putDouble("size", size);
 
         list.pushMap(appInfo);
       }
       promise.resolve(list);
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       promise.reject(ex);
     }
   }
 
   @ReactMethod
-  public void getNonSystemApps(Promise promise) {
-    try {
-      PackageManager pm = this.reactContext.getPackageManager();
-      List<PackageInfo> pList = pm.getInstalledPackages(0);
-      WritableArray list = Arguments.createArray();
-      for (int i = 0; i < pList.size(); i++) {
-        PackageInfo packageInfo = pList.get(i);
-        WritableMap appInfo = Arguments.createMap();
+  public void getNonSystemApps(final Promise promise) {
+    class OneShotTask implements Runnable {
+      private final ReactApplicationContext reactContext;
 
-        if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-          appInfo.putString("packageName", packageInfo.packageName);
-          appInfo.putString("versionName", packageInfo.versionName);
-          appInfo.putDouble("versionCode", packageInfo.versionCode);
-          appInfo.putDouble("firstInstallTime", (packageInfo.firstInstallTime));
-          appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime));
-          appInfo.putString("appName", ((String) packageInfo.applicationInfo.loadLabel(pm)).trim());
-
-          Drawable icon = pm.getApplicationIcon(packageInfo.applicationInfo);
-          appInfo.putString("icon", Utility.convert(icon));
-
-          String apkDir = packageInfo.applicationInfo.publicSourceDir;
-          appInfo.putString("apkDir", apkDir);
-
-          File file = new File(apkDir);
-          double size = file.length();
-          appInfo.putDouble("size", size);
-
-          list.pushMap(appInfo);
-        }
+      OneShotTask(final ReactApplicationContext reactContext) {
+        this.reactContext = reactContext;
       }
-      promise.resolve(list);
-    } catch (Exception ex) {
-      promise.reject(ex);
+
+      public void run() {
+        try {
+          final PackageManager pm = this.reactContext.getPackageManager();
+          final List<PackageInfo> pList = pm.getInstalledPackages(0);
+          final WritableArray list = Arguments.createArray();
+          for (int i = 0; i < pList.size(); i++) {
+            final PackageInfo packageInfo = pList.get(i);
+            final WritableMap appInfo = Arguments.createMap();
+
+            if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+              appInfo.putString("packageName", packageInfo.packageName);
+              appInfo.putString("versionName", packageInfo.versionName);
+              appInfo.putDouble("versionCode", packageInfo.versionCode);
+              appInfo.putDouble("firstInstallTime", (packageInfo.firstInstallTime));
+              appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime));
+              appInfo.putString("appName", ((String) packageInfo.applicationInfo.loadLabel(pm)).trim());
+
+              final Drawable icon = pm.getApplicationIcon(packageInfo.applicationInfo);
+              appInfo.putString("icon", Utility.convert(icon));
+
+              final String apkDir = packageInfo.applicationInfo.publicSourceDir;
+              appInfo.putString("apkDir", apkDir);
+
+              final File file = new File(apkDir);
+              final double size = file.length();
+              appInfo.putDouble("size", size);
+
+              list.pushMap(appInfo);
+            }
+          }
+          promise.resolve(list);
+        } catch (final Exception ex) {
+          promise.reject(ex);
+        }
+
+      }
     }
+    Thread t = new Thread(new OneShotTask(this.reactContext));
+    t.start();
 
   }
 
   @ReactMethod
-  public void getSystemApps(Promise promise) {
+  public void getSystemApps(final Promise promise) {
     try {
-      PackageManager pm = this.reactContext.getPackageManager();
-      List<PackageInfo> pList = pm.getInstalledPackages(0);
-      WritableArray list = Arguments.createArray();
+      final PackageManager pm = this.reactContext.getPackageManager();
+      final List<PackageInfo> pList = pm.getInstalledPackages(0);
+      final WritableArray list = Arguments.createArray();
       for (int i = 0; i < pList.size(); i++) {
-        PackageInfo packageInfo = pList.get(i);
-        WritableMap appInfo = Arguments.createMap();
+        final PackageInfo packageInfo = pList.get(i);
+        final WritableMap appInfo = Arguments.createMap();
 
         if ((packageInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
           appInfo.putString("packageName", packageInfo.packageName);
@@ -130,21 +143,21 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
           appInfo.putDouble("lastUpdateTime", (packageInfo.lastUpdateTime));
           appInfo.putString("appName", ((String) packageInfo.applicationInfo.loadLabel(pm)).trim());
 
-          Drawable icon = pm.getApplicationIcon(packageInfo.applicationInfo);
+          final Drawable icon = pm.getApplicationIcon(packageInfo.applicationInfo);
           appInfo.putString("icon", Utility.convert(icon));
 
-          String apkDir = packageInfo.applicationInfo.publicSourceDir;
+          final String apkDir = packageInfo.applicationInfo.publicSourceDir;
           appInfo.putString("apkDir", apkDir);
 
-          File file = new File(apkDir);
-          double size = file.length();
+          final File file = new File(apkDir);
+          final double size = file.length();
           appInfo.putDouble("size", size);
 
           list.pushMap(appInfo);
         }
       }
       promise.resolve(list);
-    } catch (Exception ex) {
+    } catch (final Exception ex) {
       promise.reject(ex);
     }
 
