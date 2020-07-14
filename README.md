@@ -3,7 +3,7 @@
 
 ## Getting started
 
-`$ npm install https://github.com/HydromanAG/react-native-android-installed-apps/tarball/master --save`
+`$ npm install react-native-android-installed-apps-unblocking`
 
 ### Mostly automatic installation
 
