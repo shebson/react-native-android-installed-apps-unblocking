@@ -1,6 +1,6 @@
 {
   "name": "react-native-android-installed-apps-unblocking",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Multithreaded non blocking API to retrieve installed  apps information  using native built-ins",
   "main": "index.js",
   "scripts": {

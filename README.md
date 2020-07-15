@@ -50,7 +50,7 @@
 
 ## Usage
 ```javascript
-import RNAndroidInstalledApps from 'react-native-android-installed-apps';
+import RNAndroidInstalledApps from 'react-native-android-installed-apps-unblocking';
 
 
 RNAndroidInstalledApps.getApps()
