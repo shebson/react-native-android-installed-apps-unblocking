@@ -81,6 +81,8 @@ public class RNAndroidInstalledAppsModule extends ReactContextBaseJavaModule {
         }
       }
     }
+    Thread t = new Thread(new OneShotTask(this.reactContext));
+    t.start();
   }
 
   @ReactMethod
